@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   var LANGS = [['en', 'English'], ['zh', '简体中文'], ['ja', '日本語'], ['ko', '한국어'], ['de', 'Deutsch'], ['es', 'Español'], ['fr', 'Français']];
-  var V = '45';                                   // bump with the dictionaries (cache key + query string)
+  var V = '57';                                   // bump with the dictionaries (cache key + query string)
   var dict = {}, lang = 'en', originals = new Map(), ready = false;
   function t(key, fallback) {
     var v = dict[key];
@@ -67,6 +67,26 @@
     ready = true;
     try { window.dispatchEvent(new CustomEvent('cihang:lang', { detail: { lang: lang } })); } catch (e) {}
   }
+  /* The dictionaries are fetched as JSON over http(s). A page opened straight from disk (file://) is not allowed to
+     fetch, so the same dictionary is also published as assets/i18n/<lang>.js (_gen/i18n_js.py) and loaded with a
+     script tag instead (v48, Leo 10/15: the languages did not load in a local preview). */
+  function viaScript(l) {
+    return new Promise(function (ok, fail) {
+      var have = window.CIHANG_I18N && window.CIHANG_I18N[l];
+      if (have) { ok(have); return; }
+      var s = document.createElement('script');
+      s.src = 'assets/i18n/' + l + '.js?v=' + V;
+      s.onload = function () { var d = window.CIHANG_I18N && window.CIHANG_I18N[l]; if (d) ok(d); else fail(new Error('empty dictionary')); };
+      s.onerror = function () { fail(new Error('no dictionary')); };
+      document.head.appendChild(s);
+    });
+  }
+  function load(l) {
+    if (location.protocol === 'file:') return viaScript(l);
+    return fetch('assets/i18n/' + l + '.json?v=' + V, { cache: 'force-cache' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .catch(function () { return viaScript(l); });
+  }
   function setLang(l, save) {
     l = norm(l) || 'en'; lang = l;
     if (save !== false) { try { localStorage.setItem('cihang-lang', l); } catch (e) {} }
@@ -74,7 +94,7 @@
     var cacheKey = 'cihang-i18n-' + l + '-' + V, cached = null;
     try { cached = localStorage.getItem(cacheKey); } catch (e) {}
     if (cached) { try { dict = JSON.parse(cached); apply(); } catch (e) { cached = null; } }
-    return fetch('assets/i18n/' + l + '.json?v=' + V, { cache: 'force-cache' }).then(function (r) { return r.json(); }).then(function (d) {
+    return load(l).then(function (d) {
       if (lang !== l) return;
       dict = d; try { localStorage.setItem(cacheKey, JSON.stringify(d)); } catch (e) {}
       apply();

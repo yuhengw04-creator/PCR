@@ -19,6 +19,7 @@
     "brand": { "@type": "Brand", "name": "WDC Robot" },
     "description": "Foldable personal care robot for aging in place. Drives itself with dual LiDAR and depth cameras, understands voice without the internet, and folds in five seconds.",
     "image": "assets/img/studio-front.webp",
+    "award": ["MUSE Design Awards 2026, Gold Winner, Product Design: Assistive Devices", "NY Product Design Awards 2026, Gold Winner, Healthcare: Mobility Aids"],
     "offers": { "@type": "Offer", "price": "5999", "priceCurrency": "USD", "availability": "https://schema.org/PreOrder", "url": "https://www.wdcrobot.com/" }
   }
   </script>
@@ -44,7 +45,18 @@
       } catch (e) {}
     })();
   </script>
-  <link rel="stylesheet" href="assets/css/style.css?v=45">
+  <script>
+    /* Where the backend lives. Empty string = same host as the page, which is what
+       you get when you run cihang-backend locally. Once the backend is on a server,
+       put its address here, e.g. 'https://api.wdcrobot.com' (no trailing slash).
+       Leave it empty and the form simply tells people to write by email instead. */
+    window.CIHANG_API = '';
+    /* Optional: an address people can write to if the form ever fails. Shown only then. */
+    window.CIHANG_EMAIL = '';
+  </script>
+  <link rel="stylesheet" href="assets/css/style.css?v=56">
+  <link rel="stylesheet" href="assets/css/snd.css?v=1">
+  <link rel="stylesheet" href="assets/css/structure.css?v=1">
 </head>
 <body>
 
@@ -56,16 +68,16 @@
     <a class="nav__brand" href="#top" aria-label="CIHANG home" data-i18n-attr="aria-label:nav.aria_label_cihang_home">CIHANG</a>
     <nav class="nav__links" id="nav-links" aria-label="Sections" data-i18n-attr="aria-label:nav.aria_label_sections">
       <a href="#buy" data-i18n="nav.buy">Buy</a>
+      <a href="#autonomy" data-i18n="nav.autonomy">Autonomy</a>
       <a href="#fold" data-i18n="nav.fold">Fold</a>
       <a href="#design" data-i18n="nav.design">Design</a>
       <a href="#voice" data-i18n="nav.voice">Voice</a>
-      <a href="#autonomy" data-i18n="nav.autonomy">Autonomy</a>
       <a href="#people" data-i18n="nav.people">People</a>
       <a href="#specs" data-i18n="nav.specs">Specs</a>
       <a href="#faq" data-i18n="nav.faq">FAQ</a>
       <div class="nav__sheet-langs" id="lang-pills" data-i18n-skip aria-label="Language"></div>
       <div class="nav__sheet-foot">
-        <a class="btn btn--primary" href="https://www.wdcrobot.com/" target="_blank" rel="noopener" data-i18n="nav.pre_order">Pre-order</a>
+        <a class="btn btn--primary" href="#contact" data-preorder="nav" data-i18n="nav.pre_order">Pre-order</a>
         <button type="button" class="btn btn--ghost" id="theme-toggle-2" data-i18n="nav.dark_mode">Dark mode</button>
       </div>
     </nav>
@@ -141,18 +153,25 @@
       <div class="buy__panel">
         <p class="eyebrow reveal" data-i18n="buy.buy">Buy</p>
         <h1 class="buy__title reveal" style="--d:.05s">CIHANG</h1>
-        <p class="buy__sub reveal" style="--d:.1s" data-i18n="buy.foldable_personal_care_robot_drives">Foldable personal care robot. Drives itself, understands your voice without the internet, and folds in five seconds.</p>
+        <p class="buy__sub reveal" style="--d:.1s" data-i18n="buy.foldable_personal_care_robot_drives">Foldable care robot. Self-driving, offline voice, five-second fold.</p>
+        <div class="buy__rec reveal" style="--d:.12s">
+          <ul class="buy__rec-logos">
+            <li><a class="rec" href="https://design.museaward.com/winners-info.php?id=42204" target="_blank" rel="noopener" aria-label="MUSE Design Awards 2026, Gold Winner, Assistive Devices (opens the winner page)" title="MUSE Design Awards 2026, Gold Winner, Assistive Devices (opens the winner page)" data-i18n-attr="aria-label:buy.award_muse_aria;title:buy.award_muse_aria"><img src="assets/img/award-muse-2026.webp" alt="" width="148" height="216" decoding="async"></a></li>
+            <li><a class="rec rec--ny" href="https://www.nydesignawards.com/winner-info.php?id=4867" target="_blank" rel="noopener" aria-label="NY Product Design Awards 2026, Gold Winner, Mobility Aids (opens the winner page)" title="NY Product Design Awards 2026, Gold Winner, Mobility Aids (opens the winner page)" data-i18n-attr="aria-label:buy.award_ny_aria;title:buy.award_ny_aria"><img src="assets/img/award-ny-2026.webp" alt="" width="164" height="216" decoding="async"></a></li>
+          </ul>
+          <p class="buy__rec-line"><span data-i18n="buy.award_muse_name">MUSE Design Awards 2026 Gold</span><span data-i18n="buy.award_ny_name">NY Product Design Awards 2026 Gold</span></p>
+        </div>
 
         <div class="buy__group reveal" style="--d:.15s">
           <h3 data-i18n="buy.version">Version</h3>
           <div class="buy__options" id="buy-versions">
             <button type="button" class="opt is-active" data-version="personal" aria-pressed="true">
               <strong data-i18n="buy.personal">Personal</strong>
-              <span data-i18n="buy.for_home_route_memory_saved">For home. Route memory, saved destinations, family app, automatic charging.</span>
+              <span data-i18n="buy.for_home_route_memory_saved">For home. Saved places, family app, self-charging.</span>
             </button>
             <button type="button" class="opt" data-version="shared" aria-pressed="false">
               <strong data-i18n="buy.shared">Shared</strong>
-              <span data-i18n="buy.for_care_facilities_and_rental">For care facilities and rental fleets. User switching, remote locking, fleet management.</span>
+              <span data-i18n="buy.for_care_facilities_and_rental">For care homes and fleets. User switching, remote lock, fleet management.</span>
             </button>
           </div>
         </div>
@@ -178,149 +197,7 @@
             <span class="buy__amount" id="buy-amount">$5,999</span>
             <span class="buy__note" id="buy-note" data-i18n="buy.suggested_retail_price_personal_version">Suggested retail price, personal version.</span>
           </div>
-          <a class="btn btn--primary" id="buy-cta" href="https://www.wdcrobot.com/" target="_blank" rel="noopener" data-i18n="buy.pre_order">Pre-order</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= FOLD ======================= -->
-<section class="section" id="fold">
-  <div class="container">
-    <p class="eyebrow reveal" data-i18n="fold.one_touch_folding">One-touch folding</p>
-    <h2 class="headline reveal" style="--d:.05s" data-i18n-html="fold.five_seconds_one_touch_nothing">Five seconds. One touch.<br class="br-lg"> Nothing to take apart.</h2>
-    <p class="lede reveal" style="--d:.1s" data-i18n="fold.smart_wheelchairs_carry_sensors_and">Smart wheelchairs carry sensors and computers, and most of them have to come apart before they fit in a car or a closet. CIHANG folds as one piece. Seat, LiDAR, cameras, display and computers stay exactly where they are. Press once, and it drops from 880 mm to 510 mm.</p>
-  </div>
-
-  <div class="container container--wide">
-    <!-- Scroll-driven unfold: 56 frames cut from the film, scrubbed by scroll position -->
-    <div class="unfold" id="unfold" data-frames="56">
-      <div class="unfold__sticky">
-        <div class="unfold__stage">
-          <img class="unfold__poster" src="assets/seq/unfold-01.webp" alt="CIHANG folded flat on a living-room floor; scrolling unfolds it" width="1280" height="720" data-i18n-attr="alt:fold.alt_cihang_folded_flat_on">
-          <canvas class="unfold__canvas" width="1280" height="720" aria-hidden="true"></canvas>
-          <div class="fold-readout glass unfold__readout" aria-live="polite">
-            <div class="fold-bar" aria-hidden="true"><span class="fold-bar__fill" id="unfold-fill" style="height:58%"></span></div>
-            <div class="fold-readout__text">
-              <span class="fold-readout__label" data-i18n="fold.height">Height</span>
-              <span class="fold-readout__value" id="unfold-height" data-i18n="fold.510_mm">510 mm</span>
-            </div>
-          </div>
-          <div class="unfold__hint glass" id="unfold-hint" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-            <span data-i18n="fold.scroll_to_unfold">Scroll to unfold</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="stat-row reveal">
-      <div class="stat"><span class="stat__num">5 s</span><span class="stat__label" data-i18n="fold.fold_or_unfold">Fold or unfold</span></div>
-      <div class="stat"><span class="stat__num" data-i18n="fold.510_mm_2">510 mm</span><span class="stat__label" data-i18n="fold.folded_height">Folded height</span></div>
-      <div class="stat"><span class="stat__num">−42%</span><span class="stat__label" data-i18n="fold.less_height">Less height</span></div>
-      <div class="stat"><span class="stat__num">0</span><span class="stat__label" data-i18n="fold.parts_removed">Parts removed</span></div>
-    </div>
-  </div>
-
-  <div class="container container--wide">
-    <div class="grid-3">
-      <figure class="card reveal">
-        <img src="assets/img/wardrobe-close.webp" alt="Close-up of CIHANG folded and standing inside a walnut wardrobe, backrest light on" loading="lazy" decoding="async" width="1920" height="1080" data-i18n-attr="alt:fold.alt_close_up_of_cihang">
-        <figcaption data-i18n-html="fold.fits_a_wardrobe_stand_it"><strong>Fits a wardrobe.</strong> Stand it in a closet, an equipment room or beside the bed.</figcaption>
-      </figure>
-      <figure class="card reveal" style="--d:.08s">
-        <img src="assets/img/folded-card.webp" alt="Side view of CIHANG folded flat, wheels and armrests still attached" loading="lazy" decoding="async" width="1920" height="1080" data-i18n-attr="alt:fold.alt_side_view_of_cihang">
-        <figcaption data-i18n-html="fold.fits_a_car_trunk_one"><strong>Fits a car trunk.</strong> One compact unit. No seat to lift off, no modules to carry separately.</figcaption>
-      </figure>
-      <figure class="card reveal" style="--d:.16s">
-        <img src="assets/img/fold-pair.webp" alt="CIHANG shown unfolded and folded side by side on a white background" loading="lazy" decoding="async" width="2400" height="1350" data-i18n-attr="alt:fold.alt_cihang_shown_unfolded_and">
-        <figcaption data-i18n-html="fold.powered_both_ways_a_linear"><strong>Powered both ways.</strong> A linear actuator folds and unfolds the whole chair in about five seconds.</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= DESIGN / CMF ======================= -->
-<section class="section section--alt" id="design">
-  <div class="container">
-    <p class="eyebrow reveal" data-i18n="design.designed_for_the_living_room">Designed for the living room</p>
-    <h2 class="headline reveal" style="--d:.05s" data-i18n-html="design.it_looks_like_furniture_that">It looks like furniture.<br>That's the point.</h2>
-    <p class="lede reveal" style="--d:.1s" data-i18n="design.powered_wheelchairs_tend_to_arrive">Powered wheelchairs tend to arrive in black and white, with the machinery on show. CIHANG was co-designed with older adults to be something you would keep in the living room: a low, stable stance, rounded surfaces that wrap around the technical parts, warm low-saturation colors, and solid walnut where your hands rest.</p>
-  </div>
-
-  <div class="container container--wide">
-    <div class="design-grid">
-      <figure class="card card--tall reveal">
-        <img src="assets/img/side-design.webp" alt="CIHANG in pure side view on white: walnut armrests, taupe cushions, ivory shell" loading="lazy" decoding="async" width="1800" height="1350" data-i18n-attr="alt:design.alt_side_view_on_white">
-        <figcaption data-i18n-html="design.nothing_exposed_nothing_clinical_sensors"><strong>Nothing exposed, nothing clinical.</strong> Sensors, batteries and actuators sit inside one continuous shell.</figcaption>
-      </figure>
-      <div class="design-side">
-        <figure class="card reveal" style="--d:.08s">
-          <img src="assets/img/finishes.webp" alt="Three CIHANG chairs side by side in a lobby: cream, navy and titanium, all with walnut armrests" loading="lazy" decoding="async" width="1920" height="1080" data-i18n-attr="alt:design.alt_three_cihang_chairs_side">
-          <figcaption data-i18n-html="design.three_finishes_one_walnut_cream"><strong>Three finishes, one walnut.</strong> Cream, navy or titanium shell. The armrests stay walnut on all of them.</figcaption>
-        </figure>
-        <ul class="material-list glass reveal" style="--d:.16s">
-          <li><span data-i18n="design.cream_matte_shell">Cream matte shell</span><small data-i18n="design.aluminum_alloy_stainless_steel_and">Aluminum alloy, stainless steel and fiber-reinforced composite underneath.</small></li>
-          <li><span data-i18n="design.solid_walnut_armrests">Solid walnut armrests</span><small data-i18n="design.flip_up_for_easier_transfers">Flip up for easier transfers in and out.</small></li>
-          <li><span data-i18n="design.soft_touch_pu_seat">Soft-touch PU seat</span><small data-i18n="design.removable_and_washable">Removable and washable.</small></li>
-          <li><span data-i18n="design.5_7_inch_display">5.7-inch display</span><small data-i18n="design.driving_mode_speed_battery_and">Driving mode, speed, battery and alerts. Nothing else.</small></li>
-          <li><span data-i18n="design.ip54_enclosure">IP54 enclosure</span><small data-i18n="design.wipe_it_down_without_a">Wipe it down without a second thought.</small></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="container container--wide">
-    <figure class="banner reveal">
-      <img src="assets/img/pair-living.webp" alt="Two CIHANG chairs in a warm wood-panelled living room, one unfolded and one folded, beside a media console" loading="lazy" decoding="async" width="2400" height="1350" style="object-position: 52% 84%" data-i18n-attr="alt:design.alt_two_cihang_chairs_in">
-      <figcaption data-i18n-html="design.at_home_in_the_living"><strong>At home in the living room.</strong> Open or folded, it reads as a piece of furniture, not equipment.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<!-- ======================= VOICE ======================= -->
-<section class="section" id="voice">
-  <div class="container">
-    <p class="eyebrow reveal" data-i18n="voice.on_device_voice_ai">On-device voice AI</p>
-    <h2 class="headline reveal" style="--d:.05s" data-i18n-html="voice.just_say_where_you_want">Just say where<br>you want to go.</h2>
-    <p class="lede reveal" style="--d:.1s" data-i18n="voice.cihang_runs_a_language_model">CIHANG runs a language model on its own onboard computer. Your voice never leaves the chair, and it keeps working when the Wi-Fi doesn't. It understands more than 61 Chinese dialects, heavy accents and slower speech, so you talk to it the way you already talk.</p>
-  </div>
-
-  <div class="container">
-    <div class="voice-grid">
-      <div class="chat glass reveal" id="chat">
-        <div class="chat__head">
-          <span class="chat__dot"></span>
-          <span data-i18n="voice.listening_on_device">Listening · on-device</span>
-          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-        </div>
-        <div class="bubble bubble--user" style="--d:.2s" data-i18n="voice.take_me_to_the_kitchen">Take me to the kitchen.</div>
-        <div class="bubble bubble--bot" style="--d:.9s" data-i18n="voice.on_my_way_i_ll">On my way. I'll go around the coffee table.</div>
-        <div class="bubble bubble--user" style="--d:1.8s" data-i18n="voice.a_bit_slower">A bit slower.</div>
-        <div class="bubble bubble--bot" style="--d:2.4s" data-i18n="voice.slowing_down">Slowing down.</div>
-        <div class="bubble bubble--user" style="--d:3.3s" data-i18n="voice.i_m_done_go_charge">I'm done. Go charge.</div>
-        <div class="bubble bubble--bot" style="--d:3.9s" data-i18n="voice.heading_back_to_the_dock">Heading back to the dock.</div>
-      </div>
-
-      <div class="feature-list">
-        <div class="feature reveal">
-          <h3 data-i18n="voice.works_offline">Works offline</h3>
-          <p data-i18n="voice.speech_recognition_and_the_language">Speech recognition and the language model run locally. No cloud, no account, no waiting for a server.</p>
-        </div>
-        <div class="feature reveal" style="--d:.08s">
-          <h3 data-i18n="voice.private_by_design">Private by design</h3>
-          <p data-i18n="voice.nothing_you_say_is_uploaded">Nothing you say is uploaded. The microphone feeds the chair, not a data center.</p>
-        </div>
-        <div class="feature reveal" style="--d:.16s">
-          <h3 data-i18n="voice.61_dialects">61+ dialects</h3>
-          <p data-i18n="voice.built_for_regional_dialects_varied">Built for regional dialects, varied accents and slower speech, and for people who change how they talk from day to day.</p>
-        </div>
-        <div class="feature reveal" style="--d:.24s">
-          <h3 data-i18n="voice.still_yours_to_drive">Still yours to drive</h3>
-          <p data-i18n="voice.voice_sits_alongside_the_joystick">Voice sits alongside the joystick, touchscreen, gesture and app control. Use whichever is easier today.</p>
+          <a class="btn btn--primary" id="buy-cta" href="#contact" data-preorder="buy" data-i18n="buy.pre_order">Pre-order</a>
         </div>
       </div>
     </div>
@@ -329,10 +206,13 @@
 
 <!-- ======================= AUTONOMY ======================= -->
 <section class="section section--alt" id="autonomy">
-  <div class="container">
+  <!-- v47: eyebrow, then the headline and the lede side by side on the demo's width (stacked under 900 px) -->
+  <div class="container container--wide sec-head--split">
     <p class="eyebrow reveal" data-i18n="autonomy.autonomous_navigation">Autonomous navigation</p>
-    <h2 class="headline reveal" style="--d:.05s" data-i18n-html="autonomy.it_maps_your_home_on">It maps your home<br>on the first drive.</h2>
-    <p class="lede reveal" style="--d:.1s" data-i18n="autonomy.two_lidars_and_two_depth_3">Two LiDARs and two depth cameras scan every room, doorway and threshold as CIHANG moves, and build the map on the spot. From then on it plans its own route, steers around people, pets and furniture in real time, and returns to its dock when the battery runs low. Try it below: scroll to watch the first drive build the map, tap a room or tell the app where to go, or take the joystick and drive it yourself.</p>
+    <div class="sec-head__row">
+      <h2 class="headline reveal" style="--d:.05s" data-i18n-html="autonomy.it_maps_your_home_on">It maps your home<br>on the first drive.</h2>
+      <p class="lede reveal" style="--d:.1s" data-i18n="autonomy.two_lidars_and_two_depth_3">Two LiDARs and two depth cameras map each room. Then CIHANG finds its own way and docks to charge.</p>
+    </div>
   </div>
 
   <!-- The demo (scan.js + lab.js + app.js): the first drive builds the map as a point cloud while you scroll, then the same plan
@@ -364,6 +244,8 @@
         </div>
         <div class="lab__mini glass" id="lab-mini" aria-hidden="true"><b id="lab-mini-target" data-i18n="lab.kitchen">Kitchen</b><span id="lab-mini-time">0.0 s</span><em id="lab-mini-status" data-i18n="lab.ready_push_the_knob">Ready. Push the knob.</em></div>
         <div class="drive__toast glass lab__toast" id="lab-toast" hidden></div>
+        <!-- v49: the hint on the plan once the map is ready (rooms first, then Manual) — lab.js sets .has-sent / .is-driven -->
+        <div class="lab__coach glass" id="lab-coach" aria-hidden="true"><svg class="lab__coach-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10"/><path d="M12 9.5a1.5 1.5 0 0 1 3 0V11"/><path d="M15 10.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-.6a5 5 0 0 1-4-2l-2.6-3.4a1.5 1.5 0 0 1 2.3-1.9L9 14"/><path d="M7.5 3.5 6.6 2.6M13.5 3.5l.9-.9M10.5 2V1"/></svg><span class="lab__coach-t" data-i18n="lab.coach_tap_room">Tap a room and CIHANG drives there</span><span class="lab__coach-or" data-i18n-html="lab.coach_or_manual">or switch to <b>Manual</b> and drive it yourself</span><svg class="lab__coach-joy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="7" r="3"/><path d="M12 10v6"/><path d="M5 16h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/></svg><span class="lab__coach-now" data-i18n-html="lab.coach_now_manual">Now switch to <b>Manual</b> and drive it yourself</span><i class="lab__coach-arrow" aria-hidden="true">→</i></div>
       </div>
       <div class="scan__layer">
         <canvas class="scan__canvas" aria-hidden="true"></canvas>
@@ -503,16 +385,30 @@
             </g>
           </svg>
         </div>
-        <figcaption data-i18n-html="autonomy.sees_all_the_way_around"><strong>Sees all the way around.</strong> LiDAR covers 0.05 to 30 m in every direction. Depth cameras add terrain and small-obstacle detection.</figcaption>
+        <figcaption data-i18n-html="autonomy.sees_all_the_way_around"><strong>Sees all the way around.</strong> 360° LiDAR to 30 m, depth cameras for small obstacles.</figcaption>
       </figure>
       <figure class="card reveal" style="--d:.08s">
-        <img src="assets/img/lobby.webp" alt="CIHANG driving down a wood-panelled corridor, backrest light on" loading="lazy" decoding="async" width="2400" height="1350" data-i18n-attr="alt:autonomy.alt_cihang_driving_down_a">
-        <figcaption data-i18n-html="autonomy.public_spaces_too_the_same"><strong>Public spaces too.</strong> The same map-and-plan stack works in lobbies, corridors and community centers.</figcaption>
+        <img src="assets/img/lobby.webp?v=2" alt="CIHANG parked in a bright community center lobby, daylight from tall windows on a terrazzo floor" loading="lazy" decoding="async" width="1672" height="941" data-i18n-attr="alt:autonomy.alt_cihang_driving_down_a">
+        <figcaption data-i18n-html="autonomy.public_spaces_too_the_same"><strong>Public spaces too.</strong> Lobbies, corridors and community centers.</figcaption>
       </figure>
       <figure class="card reveal" style="--d:.16s">
         <img src="assets/img/elevator.webp" alt="CIHANG entering an elevator" loading="lazy" decoding="async" width="2400" height="1347" data-i18n-attr="alt:autonomy.alt_cihang_entering_an_elevator">
-        <figcaption data-i18n-html="autonomy.rides_the_elevator_with_iot"><strong>Rides the elevator.</strong> With IoT connectivity, elevator mode calls the car and moves between floors on its own.</figcaption>
+        <figcaption data-i18n-html="autonomy.rides_the_elevator_with_iot"><strong>Rides the elevator.</strong> Calls the car and changes floors on its own.</figcaption>
       </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= STRUCTURE (v57: the portfolio's CAD anatomy figure with product copy; assets/css/structure.css, assets/js/structure*.js, _gen/v57/) ======================= -->
+<section class="section" id="structure">
+  <div class="container">
+    <h2 class="headline reveal" data-i18n="structure.structure">Structure</h2>
+    <p class="lede reveal" style="--d:.05s" data-i18n="structure.lede">CIHANG part by part: what’s under the shell, how it folds, and how it turns on the spot.</p>
+  </div>
+  <div class="container container--wide">
+    <div class="cx-wrap iso reveal" data-theme="light" data-svg="assets/js/structure-svg.js?v=1">
+<figure class="iso-figure cx"><div class="iso-plate"><div class="iso-plate-corners" aria-hidden="true"><span class="iso-plate-corner" data-corner="fig" data-tx="fig">Fig 1</span><span class="iso-plate-corner" data-corner="title" data-tx="corner">CIHANG</span><span class="iso-plate-corner" data-corner="hint" data-hint>Use the buttons to take it apart</span><span class="iso-plate-corner" data-corner="readout" data-readout></span></div><div class="cx-stage" data-fold="assets/js/structure-fold.js?v=1" tabindex="0" role="slider" aria-label="CIHANG. The buttons below take it apart and fold it; the arrow keys step through its assemblies; Space steps Assembled, Shell off, Apart; F folds it; Escape puts it back together." data-i18n-attr="aria-label:structure.aria_fig1" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"></div></div><figcaption class="iso-legend"><span class="cx-states" role="group"><button type="button" class="cx-state" data-state="assembled" aria-pressed="true" data-tx="assembled">Assembled</button><button type="button" class="cx-state" data-state="shell" aria-pressed="false" data-tx="shellOff">Shell off</button><button type="button" class="cx-state" data-state="apart" aria-pressed="false" data-tx="apart">Apart</button><button type="button" class="cx-state" data-state="folded" aria-pressed="false" data-tx="folded">Folded</button></span><span class="cx-parts-list"><button type="button" class="cx-part" data-piece-button="shell"><span class="cx-num">01</span><span data-tx="piece.shell">Shell</span></button><button type="button" class="cx-part" data-piece-button="battery"><span class="cx-num">02</span><span data-tx="piece.battery">Battery</span></button><button type="button" class="cx-part" data-piece-button="front"><span class="cx-num">03</span><span data-tx="piece.front">Front wheels</span></button><button type="button" class="cx-part" data-piece-button="rear"><span class="cx-num">04</span><span data-tx="piece.rear">Rear wheels</span></button><button type="button" class="cx-part" data-piece-button="frame"><span class="cx-num">05</span><span data-tx="piece.frame">Rear frame</span></button><button type="button" class="cx-part" data-piece-button="lift"><span class="cx-num">06</span><span data-tx="piece.lift">Lift</span></button><button type="button" class="cx-part" data-piece-button="seat"><span class="cx-num">07</span><span data-tx="piece.seat">Seat</span></button><button type="button" class="cx-part" data-piece-button="back"><span class="cx-num">08</span><span data-tx="piece.back">Backrest</span></button><button type="button" class="cx-part" data-piece-button="arms"><span class="cx-num">09</span><span data-tx="piece.arms">Armrests</span></button><button type="button" class="cx-part" data-piece-button="chassis"><span class="cx-num">10</span><span data-tx="piece.chassis">Chassis</span></button></span><span class="iso-caption" data-tx="caption">The battery sits low in the deck. Two 150 W motors drive the rear wheels, and the front wheels roll on free-turning rollers, so CIHANG turns on the spot. A four-link lift carries the seat, and the backrest and armrests hinge on its frame: one press folds it whole, from 880 to 510 mm.</span></figcaption></figure>
+<figure class="iso-figure cx2"><div class="cx2-track"><div class="cx2-pin"><div class="iso-plate"><div class="iso-plate-corners" aria-hidden="true"><span class="iso-plate-corner" data-corner="fig" data-tx2="fig2">Fig 2</span><span class="iso-plate-corner" data-corner="title" data-tx2="corner2">Front wheel</span><span class="iso-plate-corner" data-corner="hint" data-hint2>Scroll on to turn it</span><span class="iso-plate-corner" data-corner="readout" data-readout2></span></div><div class="cx2-stage" data-wheel="assets/js/structure-wheel.js?v=1" tabindex="0" role="slider" aria-label="Front wheel. Scrolling turns it from the side to the top, then shows the same view in the film; the buttons and the arrow keys go to the side, angled, top and film views." aria-valuemin="0" aria-valuemax="2" aria-valuenow="0"><svg xmlns="http://www.w3.org/2000/svg" class="iso-svg cx-svg cx2-svg" viewBox="42 42 276 292"><g class="cx2-parts"></g><g class="cx2-arrows" aria-hidden="true"></g></svg><video class="cx2-film" muted playsinline loop preload="none" data-src="assets/video/structure-wheel-film.mp4?v=1" aria-hidden="true"></video></div></div><span class="cx-states" role="group"><button type="button" class="cx-state" data-view="side" aria-pressed="true" data-tx2="side">Side</button><button type="button" class="cx-state" data-view="angle" aria-pressed="false" data-tx2="angle">Angled</button><button type="button" class="cx-state" data-view="top" aria-pressed="false" data-tx2="top">Top</button><button type="button" class="cx-state" data-view="film" aria-pressed="false" data-tx2="film">Film</button></span></div></div><figcaption class="iso-legend"><span class="iso-caption" data-tx2="caption2">Each front wheel carries ten rollers that turn freely on their own axles. The wheel rolls forward as usual and slides sideways on its rollers, so CIHANG can turn on the spot. Scroll on to see the same move in the film.</span></figcaption></figure>
     </div>
   </div>
 </section>
@@ -541,15 +437,15 @@
           </svg>
           <span class="spot__tag" style="--x:32.4%; --y:66%" data-i18n="perception.lidar_depth_camera">LiDAR + depth camera</span>
         </div>
-        <figcaption data-i18n-html="perception.sensors_set_into_the_shell"><strong>Sensors set into the shell.</strong> Cameras and LiDAR are recessed, so nothing catches on door frames or clothing.</figcaption>
+        <figcaption data-i18n-html="perception.sensors_set_into_the_shell"><strong>Sensors set into the shell.</strong> Nothing to catch on doors or clothes.</figcaption>
       </figure>
       <dl class="spec-list glass reveal" style="--d:.1s">
         <div><dt data-i18n="perception.dual_lidar">Dual LiDAR</dt><dd data-i18n="perception.360_scanning_from_0_05">360° scanning from 0.05 to 30 m.</dd></div>
         <div><dt data-i18n="perception.dual_rgb_d_cameras">Dual RGB-D cameras</dt><dd data-i18n="perception.depth_and_terrain_data_fused">Depth and terrain data, fused with LiDAR.</dd></div>
-        <div><dt data-i18n="perception.slam_ros_2_nav2">SLAM + ROS 2 Nav2</dt><dd data-i18n="perception.proprietary_map_optimization_localizatio">Proprietary map optimization, localization and path planning. Obstacles handled in under 200 ms.</dd></div>
-        <div><dt data-i18n="perception.dual_system_architecture">Dual-system architecture</dt><dd data-i18n="perception.one_board_runs_perception_motion">One board runs perception, motion and safety in real time. A second runs the screen, voice and app.</dd></div>
-        <div><dt data-i18n="perception.redundant_braking">Redundant braking</dt><dd data-i18n="perception.electromagnetic_and_mechanical_brakes_le">Electromagnetic and mechanical brakes. Let go of the joystick and it stops.</dd></div>
-        <div><dt data-i18n="perception.mecanum_front_wheels">Mecanum front wheels</dt><dd data-i18n="perception.rear_differential_drive_with_two">Rear differential drive with two 150 W brushless motors. Turns in place.</dd></div>
+        <div><dt data-i18n="perception.slam_ros_2_nav2">SLAM + ROS 2 Nav2</dt><dd data-i18n="perception.proprietary_map_optimization_localizatio">In-house mapping and path planning. Reacts in under 200 ms.</dd></div>
+        <div><dt data-i18n="perception.dual_system_architecture">Dual-system architecture</dt><dd data-i18n="perception.one_board_runs_perception_motion">One board for driving and safety, one for screen, voice and app.</dd></div>
+        <div><dt data-i18n="perception.redundant_braking">Redundant braking</dt><dd data-i18n="perception.electromagnetic_and_mechanical_brakes_le">Electromagnetic and mechanical brakes. Let go and it stops.</dd></div>
+        <div><dt data-i18n="perception.mecanum_front_wheels">Mecanum front wheels</dt><dd data-i18n="perception.rear_differential_drive_with_two">Two 150 W brushless motors. Turns on the spot.</dd></div>
       </dl>
     </div>
   </div>
@@ -590,8 +486,150 @@
   <div class="container container--wide">
     <figure class="banner reveal">
       <img src="assets/img/joystick-film.webp" alt="Close-up of the solid walnut joystick on the right armrest, three buttons beside the knob" loading="lazy" decoding="async" width="1920" height="1080" data-i18n-attr="alt:perception.alt_close_up_of_the">
-      <figcaption data-i18n-html="perception.one_knob_solid_walnut_push"><strong>One knob, solid walnut.</strong> Push to drive. Let go and the brakes are already on.</figcaption>
+      <figcaption data-i18n-html="perception.one_knob_solid_walnut_push"><strong>One knob, solid walnut.</strong> Push to go, let go to stop.</figcaption>
     </figure>
+  </div>
+</section>
+
+<!-- ======================= FOLD ======================= -->
+<section class="section" id="fold">
+  <div class="container">
+    <p class="eyebrow reveal" data-i18n="fold.one_touch_folding">One-touch folding</p>
+    <h2 class="headline reveal" style="--d:.05s" data-i18n-html="fold.five_seconds_one_touch_nothing">Five seconds. One touch.<br class="br-lg"> Nothing to take apart.</h2>
+    <p class="lede reveal" style="--d:.1s" data-i18n="fold.smart_wheelchairs_carry_sensors_and">Most smart wheelchairs have to come apart. CIHANG folds whole, from 880 to 510 mm, at one press.</p>
+  </div>
+
+  <div class="container container--wide">
+    <!-- Scroll-driven unfold: 56 frames cut from the film, scrubbed by scroll position -->
+    <div class="unfold" id="unfold" data-frames="56">
+      <div class="unfold__sticky">
+        <div class="unfold__stage">
+          <img class="unfold__poster" src="assets/seq/unfold-01.webp" alt="CIHANG folded flat on a living-room floor; scrolling unfolds it" width="1280" height="720" data-i18n-attr="alt:fold.alt_cihang_folded_flat_on">
+          <canvas class="unfold__canvas" width="1280" height="720" aria-hidden="true"></canvas>
+          <div class="fold-readout glass unfold__readout" aria-live="polite">
+            <div class="fold-bar" aria-hidden="true"><span class="fold-bar__fill" id="unfold-fill" style="height:58%"></span></div>
+            <div class="fold-readout__text">
+              <span class="fold-readout__label" data-i18n="fold.height">Height</span>
+              <span class="fold-readout__value" id="unfold-height" data-i18n="fold.510_mm">510 mm</span>
+            </div>
+          </div>
+          <div class="unfold__hint glass" id="unfold-hint" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            <span data-i18n="fold.scroll_to_unfold">Scroll to unfold</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="stat-row reveal">
+      <div class="stat"><span class="stat__num">5 s</span><span class="stat__label" data-i18n="fold.fold_or_unfold">Fold or unfold</span></div>
+      <div class="stat"><span class="stat__num" data-i18n="fold.510_mm_2">510 mm</span><span class="stat__label" data-i18n="fold.folded_height">Folded height</span></div>
+      <div class="stat"><span class="stat__num">−42%</span><span class="stat__label" data-i18n="fold.less_height">Less height</span></div>
+      <div class="stat"><span class="stat__num">0</span><span class="stat__label" data-i18n="fold.parts_removed">Parts removed</span></div>
+    </div>
+  </div>
+
+  <div class="container container--wide">
+    <div class="grid-3">
+      <figure class="card reveal">
+        <img src="assets/img/wardrobe-close.webp" alt="Close-up of CIHANG folded and standing inside a walnut wardrobe, backrest light on" loading="lazy" decoding="async" width="1920" height="1080" data-i18n-attr="alt:fold.alt_close_up_of_cihang">
+        <figcaption data-i18n-html="fold.fits_a_wardrobe_stand_it"><strong>Fits a wardrobe.</strong> Or stands beside the bed.</figcaption>
+      </figure>
+      <figure class="card reveal" style="--d:.08s">
+        <img src="assets/img/folded-card.webp" alt="Side view of CIHANG folded flat, wheels and armrests still attached" loading="lazy" decoding="async" width="1920" height="1080" data-i18n-attr="alt:fold.alt_side_view_of_cihang">
+        <figcaption data-i18n-html="fold.fits_a_car_trunk_one"><strong>Fits a car trunk.</strong> One piece, nothing to lift off.</figcaption>
+      </figure>
+      <figure class="card reveal" style="--d:.16s">
+        <img src="assets/img/fold-pair.webp" alt="CIHANG shown unfolded and folded side by side on a white background" loading="lazy" decoding="async" width="2400" height="1350" data-i18n-attr="alt:fold.alt_cihang_shown_unfolded_and">
+        <figcaption data-i18n-html="fold.powered_both_ways_a_linear"><strong>Powered both ways.</strong> Folds and unfolds itself in about five seconds.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= DESIGN / CMF ======================= -->
+<section class="section section--alt" id="design">
+  <div class="container">
+    <p class="eyebrow reveal" data-i18n="design.designed_for_the_living_room">Designed for the living room</p>
+    <h2 class="headline reveal" style="--d:.05s" data-i18n-html="design.it_looks_like_furniture_that">It looks like furniture.<br>That's the point.</h2>
+    <p class="lede reveal" style="--d:.1s" data-i18n="design.powered_wheelchairs_tend_to_arrive">Co-designed with older adults: a low, stable stance, soft surfaces, warm colors and walnut where your hands rest.</p>
+  </div>
+
+  <div class="container container--wide">
+    <div class="design-grid">
+      <figure class="card card--tall reveal">
+        <img src="assets/img/side-design.webp" alt="CIHANG in pure side view on white: walnut armrests, taupe cushions, ivory shell" loading="lazy" decoding="async" width="1800" height="1350" data-i18n-attr="alt:design.alt_side_view_on_white">
+        <figcaption data-i18n-html="design.nothing_exposed_nothing_clinical_sensors"><strong>Nothing exposed, nothing clinical.</strong> Everything sits inside one shell.</figcaption>
+      </figure>
+      <div class="design-side">
+        <figure class="card reveal" style="--d:.08s">
+          <img src="assets/img/finishes.webp" alt="Three CIHANG chairs side by side in a lobby: cream, navy and titanium, all with walnut armrests" loading="lazy" decoding="async" width="1920" height="1080" data-i18n-attr="alt:design.alt_three_cihang_chairs_side">
+          <figcaption data-i18n-html="design.three_finishes_one_walnut_cream"><strong>Three finishes, one walnut.</strong> Cream, navy or titanium, always with walnut armrests.</figcaption>
+        </figure>
+        <ul class="material-list glass reveal" style="--d:.16s">
+          <li><span data-i18n="design.cream_matte_shell">Cream matte shell</span><small data-i18n="design.aluminum_alloy_stainless_steel_and">Aluminum, stainless steel and composite underneath.</small></li>
+          <li><span data-i18n="design.solid_walnut_armrests">Solid walnut armrests</span><small data-i18n="design.flip_up_for_easier_transfers">Flip up for easier transfers in and out.</small></li>
+          <li><span data-i18n="design.soft_touch_pu_seat">Soft-touch PU seat</span><small data-i18n="design.removable_and_washable">Removable and washable.</small></li>
+          <li><span data-i18n="design.5_7_inch_display">5.7-inch display</span><small data-i18n="design.driving_mode_speed_battery_and">Driving mode, speed, battery and alerts. Nothing else.</small></li>
+          <li><span data-i18n="design.ip54_enclosure">IP54 enclosure</span><small data-i18n="design.wipe_it_down_without_a">Wipe it down without a second thought.</small></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container container--wide">
+    <figure class="banner reveal">
+      <img src="assets/img/pair-living.webp" alt="Two CIHANG chairs in a warm wood-panelled living room, one unfolded and one folded, beside a media console" loading="lazy" decoding="async" width="2400" height="1350" style="object-position: 52% 84%" data-i18n-attr="alt:design.alt_two_cihang_chairs_in">
+      <figcaption data-i18n-html="design.at_home_in_the_living"><strong>At home in the living room.</strong> Open or folded, it reads as furniture.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= VOICE ======================= -->
+<section class="section" id="voice">
+  <div class="container">
+    <p class="eyebrow reveal" data-i18n="voice.on_device_voice_ai">On-device voice AI</p>
+    <h2 class="headline reveal" style="--d:.05s" data-i18n-html="voice.just_say_where_you_want">Just say where<br>you want to go.</h2>
+    <p class="lede reveal" style="--d:.1s" data-i18n="voice.cihang_runs_a_language_model">The language model runs on the chair: it works offline, keeps your voice private and understands 61+ Chinese dialects.</p>
+  </div>
+
+  <div class="container">
+    <div class="voice-grid">
+      <div class="chat glass reveal" id="chat">
+        <div class="chat__head">
+          <span class="chat__dot"></span>
+          <span data-i18n="voice.listening_on_device">Listening · on-device</span>
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+        <div class="bubble bubble--user" style="--d:.2s" data-i18n="voice.take_me_to_the_kitchen">Take me to the kitchen.</div>
+        <div class="bubble bubble--bot" style="--d:.9s" data-i18n="voice.on_my_way_i_ll">On my way. I'll go around the coffee table.</div>
+        <div class="bubble bubble--user" style="--d:1.8s" data-i18n="voice.a_bit_slower">A bit slower.</div>
+        <div class="bubble bubble--bot" style="--d:2.4s" data-i18n="voice.slowing_down">Slowing down.</div>
+        <div class="bubble bubble--user" style="--d:3.3s" data-i18n="voice.i_m_done_go_charge">I'm done. Go charge.</div>
+        <div class="bubble bubble--bot" style="--d:3.9s" data-i18n="voice.heading_back_to_the_dock">Heading back to the dock.</div>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature reveal">
+          <h3 data-i18n="voice.works_offline">Works offline</h3>
+          <p data-i18n="voice.speech_recognition_and_the_language">Speech and language run on the chair. No cloud, no account.</p>
+        </div>
+        <div class="feature reveal" style="--d:.08s">
+          <h3 data-i18n="voice.private_by_design">Private by design</h3>
+          <p data-i18n="voice.nothing_you_say_is_uploaded">Nothing you say is uploaded.</p>
+        </div>
+        <div class="feature reveal" style="--d:.16s">
+          <h3 data-i18n="voice.61_dialects">61+ dialects</h3>
+          <p data-i18n="voice.built_for_regional_dialects_varied">Made for dialects, accents and slower speech.</p>
+        </div>
+        <div class="feature reveal" style="--d:.24s">
+          <h3 data-i18n="voice.still_yours_to_drive">Still yours to drive</h3>
+          <p data-i18n="voice.voice_sits_alongside_the_joystick">Or use the joystick, touchscreen, gestures or app.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -600,7 +638,7 @@
   <div class="container">
     <p class="eyebrow reveal" data-i18n="people.who_it_s_for">Who it’s for</p>
     <h2 class="headline reveal" style="--d:.05s" data-i18n-html="people.built_for_people_who_still">Built for people who still<br class="br-lg"> have places to be.</h2>
-    <p class="lede reveal" style="--d:.1s" data-i18n="people.for_anyone_who_finds_walking">For anyone who finds walking hard for a while, or for good, and for the people who look after them. Four situations we designed around.</p>
+    <p class="lede reveal" style="--d:.1s" data-i18n="people.for_anyone_who_finds_walking">For anyone who finds walking hard, and the people who care for them.</p>
   </div>
 
   <div class="container">
@@ -611,7 +649,7 @@
     <div class="life reveal">
       <figure class="card life__photo">
         <img src="assets/img/picnic.webp" alt="A grandmother in a CIHANG on a park lawn, handing a strawberry to her granddaughter; the family on a picnic blanket beside her" loading="lazy" decoding="async" width="2400" height="1350" data-i18n-attr="alt:people.alt_park_picnic">
-        <figcaption data-i18n-html="people.out_with_the_family"><strong>Out with the family.</strong> Lawn, path or picnic blanket, the chair comes along — and three generations share the afternoon.</figcaption>
+        <figcaption data-i18n-html="people.out_with_the_family"><strong>Out with the family.</strong> Lawn, path or picnic, the chair comes along.</figcaption>
       </figure>
       <ol class="life__day" aria-label="A typical day" data-i18n-attr="aria-label:people.aria_label_a_typical_day">
         <li><time>07:30</time><div><strong data-i18n="people.i_m_thirsty">“I’m thirsty.”</strong><span data-i18n="people.to_the_kitchen_no_hands">To the kitchen. No hands on the joystick.</span></div><em data-i18n="people.aging_in_place">Aging in place</em></li>
@@ -631,15 +669,15 @@
     <div class="orgs">
       <figure class="card reveal">
         <img src="assets/img/hospital.webp" alt="CIHANG driving itself down a hospital corridor with an elderly patient, a nurse walking alongside" loading="lazy" decoding="async" width="1600" height="1200" data-i18n-attr="alt:people.alt_hospital_corridor_nurse">
-        <figcaption data-i18n-html="people.hospitals_and_rehab_ward_to"><strong>Hospitals and rehab.</strong> Ward-to-clinic transport, elevators handled by the chair, remote locking from the nurses’ station. Staff walk less; patients wait less.</figcaption>
+        <figcaption data-i18n-html="people.hospitals_and_rehab_ward_to"><strong>Hospitals and rehab.</strong> Ward to clinic on its own, elevators included.</figcaption>
       </figure>
       <figure class="card reveal" style="--d:.08s">
         <img src="assets/img/lounge-home.webp" alt="Two residents having tea in a senior community lounge, one seated in a CIHANG; a second chair charging by the wall" loading="lazy" decoding="async" width="1600" height="1200" data-i18n-attr="alt:people.alt_senior_lounge_tea">
-        <figcaption data-i18n-html="people.senior_communities_one_fleet"><strong>Senior communities.</strong> One fleet, many residents. User switching, a saved place for everyone, docks in the lounge. Independence across the whole building, not just the room.</figcaption>
+        <figcaption data-i18n-html="people.senior_communities_one_fleet"><strong>Senior communities.</strong> One fleet, many residents, a saved place for each.</figcaption>
       </figure>
       <figure class="card reveal" style="--d:.16s">
         <img src="assets/img/airport.webp" alt="A row of CIHANG chairs on charging docks in an airport concourse, a traveller unlocking one with his phone" loading="lazy" decoding="async" width="1600" height="1200" data-i18n-attr="alt:people.alt_airport_rental_dock">
-        <figcaption data-i18n-html="people.rental_fleets_and_hospitality_malls"><strong>Rental fleets and hospitality.</strong> Malls, airports, parks, resorts. Rent from a dock, return anywhere, and fleet management sees every chair, every charge and every trip.</figcaption>
+        <figcaption data-i18n-html="people.rental_fleets_and_hospitality_malls"><strong>Rental fleets and hospitality.</strong> Rent at a dock, return anywhere, track every chair.</figcaption>
       </figure>
     </div>
   </div>
@@ -679,34 +717,77 @@
     <div class="faq reveal" style="--d:.1s">
       <details>
         <summary data-i18n="faq.does_it_need_an_internet">Does it need an internet connection?</summary>
-        <p data-i18n="faq.no_voice_navigation_and_mapping">No. Voice, navigation and mapping run on the chair's own computers. A connection adds app features such as remote monitoring, elevator calling and software updates.</p>
+        <p data-i18n="faq.no_voice_navigation_and_mapping">No. Voice, navigation and mapping run on the chair. A connection adds remote monitoring, elevator calls and updates.</p>
       </details>
       <details>
         <summary data-i18n="faq.how_small_does_it_get">How small does it get?</summary>
-        <p data-i18n="faq.folded_cihang_is_510_mm">Folded, CIHANG is 510 mm tall, down from 880 mm. It stands in a wardrobe, lies flat in a car trunk and fits in equipment rooms and elevators without disassembly.</p>
+        <p data-i18n="faq.folded_cihang_is_510_mm">510 mm tall folded, down from 880 mm. It fits a wardrobe, a car trunk or an elevator without taking anything apart.</p>
       </details>
       <details>
         <summary data-i18n="faq.can_i_still_drive_it">Can I still drive it myself?</summary>
-        <p data-i18n="faq.yes_use_the_joystick_touchscreen">Yes. Use the joystick, touchscreen, gestures or the app at any time. Release the joystick and the chair stops. Autonomous driving is a mode you switch into, never something forced on you.</p>
+        <p data-i18n="faq.yes_use_the_joystick_touchscreen">Yes. Joystick, touchscreen, gestures or app, any time. Let go of the joystick and it stops. Self-driving is a mode you choose.</p>
       </details>
       <details>
         <summary data-i18n="faq.who_is_it_for">Who is it for?</summary>
-        <p data-i18n-html="faq.older_adults_who_want_to">Older adults who want to keep living at home, people recovering from surgery or injury, long-term wheelchair users, and the families who support them. Care homes, hospitals and rental operators use the Shared version. <a href="#people">See the four situations we designed around.</a></p>
+        <p data-i18n-html="faq.older_adults_who_want_to">Older adults living at home, people recovering from surgery or injury, long-term wheelchair users and their families. Institutions use the Shared version. <a href="#people">See where it is used.</a></p>
       </details>
       <details>
         <summary data-i18n="faq.is_it_certified">Is it certified?</summary>
-        <p data-i18n="faq.cihang_is_registered_as_a">CIHANG is registered as a Class II medical device with the NMPA and tested to GB/T 12996-2024 and GB/T 18029 / ISO 7176 for wheelchair safety, stability, braking, fatigue durability and EMC. Additional certifications include EU CE (MDR and RoHS), U.S. FDA 510(k) and FCC, Korea KC and MFDS, and UN38.3 battery transport testing.</p>
+        <p data-i18n="faq.cihang_is_registered_as_a">NMPA Class II medical device, tested to GB/T 12996-2024 and GB/T 18029 / ISO 7176. Also certified: CE (MDR, RoHS), FDA 510(k), FCC, KC, MFDS and UN38.3.</p>
       </details>
       <details>
         <summary data-i18n="faq.how_do_i_buy_one">How do I buy one?</summary>
-        <p data-i18n="faq.the_personal_version_is_sold">The personal version is sold direct to consumers online. The shared version is available to institutions through WDC Robot.</p>
+        <p data-i18n="faq.the_personal_version_is_sold">Personal: sold online, direct. Shared: for institutions, through WDC Robot.</p>
       </details>
     </div>
   </div>
 </section>
 
+<!-- ======================= CONTACT ======================= -->
+<section class="section contact" id="contact" aria-label="Contact" data-i18n-attr="aria-label:contact.aria_label_contact">
+  <div class="container container--narrow">
+    <h2 class="headline reveal" data-i18n="contact.talk_to_us">Talk to us.</h2>
+    <p class="lede reveal" style="--d:.06s" data-i18n="contact.tell_us_where_you_are">Tell us your country and version. We reply with price, availability and lead time.</p>
+    <div class="contact__slot reveal" id="form-home" style="--d:.12s">
+      <form class="pform" id="pform" novalidate>
+        <div class="pform__grid">
+          <label class="fld">
+            <span data-i18n="form.name">Name</span>
+            <input name="name" type="text" autocomplete="name" maxlength="120" required>
+          </label>
+          <label class="fld">
+            <span data-i18n="form.email">Email</span>
+            <input name="email" type="email" autocomplete="email" maxlength="200" inputmode="email" required>
+          </label>
+          <label class="fld">
+            <span data-i18n="form.country_or_region">Country or region</span>
+            <input name="region" type="text" autocomplete="country-name" maxlength="80">
+          </label>
+          <div class="fld">
+            <span data-i18n="form.which_version">Which version</span>
+            <div class="pform__seg" role="radiogroup" aria-label="Version" data-i18n-attr="aria-label:buy.version">
+              <label class="pform__opt"><input type="radio" name="version" value="personal" checked><span data-i18n="form.personal">Personal</span></label>
+              <label class="pform__opt"><input type="radio" name="version" value="shared"><span data-i18n="form.shared">Shared</span></label>
+            </div>
+          </div>
+        </div>
+        <label class="fld fld--full">
+          <span data-i18n="form.anything_you_want_to_tell">Anything you want to tell us</span>
+          <textarea name="message" rows="3" maxlength="4000" placeholder="How you plan to use it, questions about the fold, fleet sizes — anything." data-i18n-attr="placeholder:form.how_you_plan_to_use"></textarea>
+        </label>
+        <div class="pform__hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="pform__foot">
+          <button class="btn btn--primary pform__send" type="submit" data-i18n="form.send">Send</button>
+          <p class="pform__note" data-i18n="form.we_reply_by_email_usually">We reply within two working days. No newsletter, no third parties.</p>
+        </div>
+        <p class="pform__msg" id="pform-msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= CLOSING ======================= -->
-<section class="section section--alt closing">
+<section class="section section--alt closing" id="closing">
   <div class="container container--wide reveal">
     <figure class="closing__media">
       <img src="assets/img/pair-facing.webp" alt="Two CIHANG chairs facing each other in a wood-panelled living room, one unfolded and one folded" loading="lazy" decoding="async" width="2400" height="1350" data-i18n-attr="alt:closing.alt_two_chairs_facing">
@@ -715,7 +796,7 @@
   <div class="container container--narrow">
     <h2 class="headline reveal" data-i18n-html="closing.go_where_you_want_fold">Go where you want.<br>Fold it away at home.</h2>
     <div class="cta-row reveal" style="--d:.08s">
-      <a class="btn btn--primary" href="https://www.wdcrobot.com/" target="_blank" rel="noopener" data-i18n="closing.contact_wdc_robot">Contact WDC Robot</a>
+      <a class="btn btn--primary" href="#contact" data-preorder="closing" data-i18n="closing.contact_wdc_robot">Contact WDC Robot</a>
       <a class="btn btn--ghost" href="#top" data-i18n="closing.back_to_top">Back to top</a>
     </div>
   </div>
@@ -725,7 +806,19 @@
 
 <div class="buybar glass" id="buybar" hidden>
   <div class="buybar__text"><strong id="buybar-amount">$5,999</strong><span id="buybar-note">CIHANG · Personal</span></div>
-  <a class="btn btn--primary" href="https://www.wdcrobot.com/" target="_blank" rel="noopener" data-i18n="page.pre_order">Pre-order</a>
+  <a class="btn btn--primary" href="#contact" data-preorder="buybar" data-i18n="page.pre_order">Pre-order</a>
+</div>
+
+<div class="modal" id="preorder" hidden>
+  <div class="modal__scrim" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="preorder-title">
+    <button class="modal__x" type="button" data-modal-close aria-label="Close" data-i18n-attr="aria-label:form.close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h2 class="modal__title" id="preorder-title" data-i18n="form.pre_order_cihang">Pre-order CIHANG</h2>
+    <p class="modal__sub" data-i18n="form.leave_your_details_and_well">Leave your details for price and availability in your country.</p>
+    <div class="modal__slot" id="form-modal"></div>
+  </div>
 </div>
 
 <footer class="footer">
@@ -735,16 +828,21 @@
       <p class="footer__by" data-i18n="footer.a_product_of_wdc_robot">A product of WDC Robot · Shenzhen WanDechang Innovation Intelligence Co., Ltd.</p>
     </div>
     <nav class="footer__links" aria-label="Footer" data-i18n-attr="aria-label:footer.aria_label_footer">
-      <a href="#buy" data-i18n="footer.buy">Buy</a><a href="#fold" data-i18n="footer.fold">Fold</a><a href="#autonomy" data-i18n="footer.autonomy">Autonomy</a><a href="#people" data-i18n="footer.people">People</a><a href="#specs" data-i18n="footer.specs">Specs</a><a href="#faq" data-i18n="footer.faq">FAQ</a>
+      <a href="#buy" data-i18n="footer.buy">Buy</a><a href="#autonomy" data-i18n="footer.autonomy">Autonomy</a><a href="#fold" data-i18n="footer.fold">Fold</a><a href="#people" data-i18n="footer.people">People</a><a href="#specs" data-i18n="footer.specs">Specs</a><a href="#faq" data-i18n="footer.faq">FAQ</a><a href="#contact" data-i18n="footer.contact">Contact</a>
     </nav>
     <p class="footer__note" data-i18n="footer.2026_wdc_robot_specifications_refer">© 2026 WDC Robot. Specifications refer to the current production design and may change.</p>
   </div>
 </footer>
 
-<script src="assets/js/i18n.js?v=45"></script>
-<script src="assets/js/main.js?v=45"></script>
-<script src="assets/js/scan.js?v=45"></script>
-<script src="assets/js/lab.js?v=45"></script>
-<script src="assets/js/app.js?v=45"></script>
+<script src="assets/js/i18n.js?v=57"></script>
+<script src="assets/js/main.js?v=55"></script>
+<script src="assets/js/snd.js?v=1"></script>
+<script src="assets/js/scan.js?v=50"></script>
+<script src="assets/js/lab.js?v=54"></script>
+<script src="assets/js/lab-demo.js?v=53"></script>
+<script src="assets/js/app.js?v=49"></script>
+<script src="assets/js/stat.js?v=49"></script>
+<script src="assets/js/form.js?v=49"></script>
+<script src="assets/js/structure.js?v=1"></script>
 </body>
 </html>

@@ -304,7 +304,7 @@
   var buybar = document.getElementById('buybar');
   var priceBlock = document.querySelector('.buy__price');
   if (buybar && priceBlock) {
-    var endEl = document.querySelector('.closing'), galleryEl = document.querySelector('.buy__main'), barShown = false, barTick = false;
+    var endEl = document.getElementById('contact') || document.querySelector('.closing'), galleryEl = document.querySelector('.buy__main'), barShown = false, barTick = false;
     var demos = [document.getElementById('lab-scan')].filter(Boolean);   // keep the bar out of the way while the demo is playing
     function syncBar() {
       barTick = false;
@@ -343,7 +343,7 @@
   });
 
   /* ---------- Nav: highlight the section in view ---------- */
-  var navLinks = document.querySelectorAll('.nav__links a[href^="#"]');
+  var navLinks = document.querySelectorAll('.nav__links a[href^="#"]:not(.btn)');
   if (navLinks.length && 'IntersectionObserver' in window) {
     var linkFor = {};
     navLinks.forEach(function (a) { linkFor[a.getAttribute('href').slice(1)] = a; });
@@ -485,4 +485,72 @@
   } else {
     players.forEach(function (el) { el.classList.add('play'); });
   }
+})();
+
+
+/* ---------- 10/23 the hero gallery, better to use (Leo "优化交互"): swipe or drag the render to the next view,
+   and the thumb row takes the arrow keys like a real tab list. Both just click the thumb that is wanted, so the
+   existing handler does the work - including stopping the auto-play once the visitor has taken over. ES5. ---------- */
+(function () {
+  if (window.__chGallery) return;
+  window.__chGallery = 1;
+  var main = document.getElementById('buy-main');
+  var row = document.querySelector('.buy__thumbs');
+  if (!main || !row) return;
+  var thumbs = Array.prototype.slice.call(row.querySelectorAll('button'));
+  if (thumbs.length < 2) return;
+
+  function current() {
+    for (var i = 0; i < thumbs.length; i++) if (thumbs[i].className.indexOf('is-active') >= 0) return i;
+    return 0;
+  }
+  function go(step, focus) {
+    var i = (current() + step + thumbs.length) % thumbs.length;
+    thumbs[i].click();
+    if (focus) thumbs[i].focus();
+  }
+
+  /* arrow keys on the row */
+  row.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowDown') { e.preventDefault(); go(1, true); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp') { e.preventDefault(); go(-1, true); }
+    else if (k === 'Home') { e.preventDefault(); thumbs[0].click(); thumbs[0].focus(); }
+    else if (k === 'End') { e.preventDefault(); thumbs[thumbs.length - 1].click(); thumbs[thumbs.length - 1].focus(); }
+  });
+  for (var t = 0; t < thumbs.length; t++) thumbs[t].tabIndex = 0;
+
+  /* swipe on a phone, drag with the mouse; under 40 px it is a click, not a swipe */
+  /* the browser's own image drag fires pointercancel a few pixels in, which would kill the swipe before it
+     is recognised - so the pictures are not draggable */
+  main.setAttribute('draggable', 'false');
+  for (var d = 0; d < thumbs.length; d++) {
+    var ti = thumbs[d].querySelector('img');
+    if (ti) ti.setAttribute('draggable', 'false');
+  }
+  var box = main.parentNode, x0 = 0, y0 = 0, down = false, moved = false;
+  function start(e) {
+    if (e.pointerType === 'mouse' && e.button) return;
+    down = true; moved = false; x0 = e.clientX; y0 = e.clientY;
+  }
+  function move(e) {
+    if (!down) return;
+    var dx = e.clientX - x0, dy = e.clientY - y0;
+    if (!moved && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      moved = true; down = false;
+      go(dx < 0 ? 1 : -1, false);
+    }
+  }
+  function end() { down = false; }
+  if (window.PointerEvent) {
+    box.addEventListener('pointerdown', start);
+    box.addEventListener('pointermove', move);
+    box.addEventListener('pointerup', end);
+    box.addEventListener('pointercancel', end);
+  } else {
+    box.addEventListener('touchstart', function (e) { start(e.touches[0]); }, { passive: true });
+    box.addEventListener('touchmove', function (e) { move(e.touches[0]); }, { passive: true });
+    box.addEventListener('touchend', end);
+  }
+  box.addEventListener('dragstart', function (e) { e.preventDefault(); });
 })();

@@ -30,7 +30,7 @@
 
   /* ---------- The plan: graph, rooms, collision set ---------- */
   var EDGES = [
-    ['ent', 'wcd'], ['wcd', 'e1'], ['wcd', 'wc'], ['e1', 'lv'], ['lv', 'liv'], ['lv', 'din'], ['din', 'k1'],
+    ['ent', 'wcd'], ['wcd', 'e1'], ['wcd', 'wc'], ['e1', 'lv'], ['lv', 'lng'], ['lng', 'liv'], ['lv', 'din'], ['din', 'k1'],
     ['k1', 'k2'], ['k1', 'h1'], ['h1', 'dock'],
     ['h1', 'h2'], ['h2', 'b1d'], ['b1d', 'b1a'], ['b1a', 'b1'],
     ['h2', 'hb'], ['hb', 'bth'], ['bth', 'b2'],
@@ -39,7 +39,9 @@
     ['u1', 'u2'], ['u2', 'ed'], ['ed', 'ens']
   ];
   // nodes the scan module does not need
-  NODES = Object.assign({}, NODES, { wc: [245, 378], bth: [876, 761], b2: [876, 840], ens: [1280, 200] });
+  // v53 lng: the open floor of the living room, between the two seating groups and the hallway — where the demo pointer
+  // sends CIHANG, so the visitor's manual drive afterwards starts with room to move (Leo 10/21, 10/23: not the bedroom)
+  NODES = Object.assign({}, NODES, { wc: [245, 378], bth: [876, 761], b2: [876, 840], ens: [1280, 200], lng: [400, 760] });
   var ROOMS = {
     dock:    { node: 'dock', name: 'Dock',         label: 'the dock' },
     entry:   { node: 'ent',  name: 'Entry',        label: 'the entry' },
@@ -47,14 +49,15 @@
     kitchen: { node: 'k2',   name: 'Kitchen',      label: 'the kitchen' },
     dining:  { node: 'din',  name: 'Dining',       label: 'the dining table' },
     living:  { node: 'liv',  name: 'Living room',  label: 'the living room' },
+    lounge:  { node: 'lng',  name: 'Lounge',       label: 'the lounge' },
     bedroom: { node: 'b1',   name: 'Bedroom',      label: 'the bedroom' },
     ensuite: { node: 'ens',  name: 'Ensuite',      label: 'the ensuite' },
     master:  { node: 'mb',   name: 'Main bedroom', label: 'the main bedroom' },
     bath:    { node: 'b2',   name: 'Bathroom',     label: 'the bathroom' },
     guest:   { node: 'g1',   name: 'Guest room',   label: 'the guest room' }
   };
-  var PIN_ORDER = ['entry', 'wc', 'kitchen', 'dining', 'living', 'bedroom', 'ensuite', 'master', 'bath', 'guest'];
-  var PIN_POS = { entry: [97, 420], wc: [272, 466], kitchen: [421, 300], dining: [519, 500], living: [561, 760], bedroom: [935, 300], ensuite: [1230, 70], master: [1660, 391], bath: [835, 1010], guest: [1150, 900] };
+  var PIN_ORDER = ['entry', 'wc', 'kitchen', 'dining', 'living', 'lounge', 'bedroom', 'ensuite', 'master', 'bath', 'guest'];
+  var PIN_POS = { entry: [97, 420], wc: [272, 466], kitchen: [421, 300], dining: [519, 500], living: [561, 760], lounge: [236, 700], bedroom: [935, 300], ensuite: [1230, 70], master: [1660, 391], bath: [835, 1010], guest: [1150, 900] };
   var DOCK = NODES.dock;
   // the game: four targets in order, par times from the route lengths
   var GAME = [
@@ -126,6 +129,8 @@
     var label = el('text', { x: 30, y: 9, 'class': 'lab__pin-text' }, g); label.textContent = roomName(id);
     var w = label.getComputedTextLength ? 0 : 0;   // measured below, once the SVG is laid out
     var bg = el('rect', { x: -22, y: -22, height: 44, rx: 22, width: 160 }, g); g.insertBefore(bg, label);
+    el('circle', { cx: 0, cy: 0, r: 7, 'class': 'lab__pin-pulse' }, g);   // v49: a glowing ring until a room is chosen
+    g.style.setProperty('--pd', (i * 0.32).toFixed(2) + 's');
     el('circle', { cx: 0, cy: 0, r: 7 }, g);
     pinEls[id] = g; pinList.push({ el: g, id: id, x: p[0], y: p[1], bg: bg, label: label });
   });
@@ -301,6 +306,7 @@
   var sendRaf = 0, sendLast = 0, teleTick = 0;
   function navigateTo(roomId, intro) {
     if (!ROOMS[roomId]) return null;
+    root.classList.add('has-sent');   // v49: the room hint is done; the line on the plan now points at Manual
     if (mode !== 'send') setMode('send');
     var target = ROOMS[roomId].node;
     if (!st.moving && target === st.node) {
@@ -771,7 +777,7 @@
     input.x = dx / max; input.y = -dy / max;
     placeKnob(input.x, input.y);
   }
-  joy.addEventListener('pointerdown', function (e) { e.preventDefault(); joy.setPointerCapture(e.pointerId); input.active = true; joy.classList.add('is-active'); setFromPointer(e); start(); });
+  joy.addEventListener('pointerdown', function (e) { e.preventDefault(); hintDone(); joy.setPointerCapture(e.pointerId); input.active = true; joy.classList.add('is-active'); setFromPointer(e); start(); });
   joy.addEventListener('pointermove', function (e) { if (input.active) setFromPointer(e); });
   function release(e) {
     if (!input.active) return;
@@ -784,7 +790,7 @@
     var k = KEYMAP[e.code]; if (!k || !inView || mode !== 'drive') return;
     var tg = e.target, tn = tg && tg.tagName;
     if (tn === 'TEXTAREA' || tn === 'SELECT' || (tn === 'INPUT' && !/^(checkbox|radio|button|submit)$/.test(tg.type))) return;
-    e.preventDefault(); keys[k] = true; start();
+    e.preventDefault(); keys[k] = true; hintDone(); start();
   });
   window.addEventListener('keyup', function (e) { var k = KEYMAP[e.code]; if (k) keys[k] = false; });
   window.addEventListener('blur', function () { keys = {}; });
@@ -794,6 +800,20 @@
     joy.focus({ preventScroll: true });
     setStatus(ui.assist.checked ? 'ready' : 'off', ui.assist.checked ? L10N('js.game.assist_on', 'Wall assist on.') : L10N('js.game.assist_off', 'Wall assist off — walls will bump.'));
   });
+
+  /* ---------- v54: the "use the knob" hint (Leo 10/23 "点了manual之后提示用把手") ----------
+     On entering Manual the pad shows how it is used: the track glows, the knob leans forward and comes back by itself,
+     and a pill says "Drag to drive" (style.css .joy.is-hint). It goes the moment the knob is touched or a drive key is
+     pressed, and does not come back for the rest of the visit. */
+  var hintUsed = false, hintEl = document.createElement('span');
+  hintEl.className = 'joy__hint'; hintEl.setAttribute('aria-hidden', 'true');
+  joy.appendChild(hintEl);
+  function hint(on) {
+    on = !!on && !hintUsed;
+    if (on) hintEl.textContent = L10N('js.lab.drag_to_drive', 'Drag to drive');
+    joy.classList.toggle('is-hint', on);
+  }
+  function hintDone() { if (!hintUsed) { hintUsed = true; hint(false); } }
 
   /* ---------- Modes ---------- */
   var modeBtns = Array.prototype.slice.call(root.querySelectorAll('.lab__mode'));
@@ -809,6 +829,7 @@
       markRoom(null);
       var anim = layout(true);
       resetGame(true);
+      hint(true);
       if (anim) { stage.classList.add('is-zooming'); tweenCam(true, function () { stage.classList.remove('is-zooming'); start(); }); } else start();   // zoom in onto the chair where it stands, then hand over the knob
     } else {
       mode = 'send';
@@ -817,6 +838,7 @@
       for (var k in goalEls) goalEls[k].classList.remove('is-on');
       pinList.forEach(function (p) { p.el.classList.remove('is-target'); });
       fanFront.setAttribute('points', ''); fanRear.setAttribute('points', ''); dotEls.forEach(function (d) { d.setAttribute('opacity', 0); }); ring.classList.remove('is-on');
+      hint(false);
       svg.classList.remove('is-drive');
       sendBox.hidden = false; driveBox.hidden = true;
       // where are we? on a node if close to one, otherwise free (the planner picks the best node to join)

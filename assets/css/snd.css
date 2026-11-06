@@ -1,0 +1,32 @@
+/* CIHANG film: the sound prompt as on ElectroGlide (Leo 10/23 19:24 CT "声音提醒和eg一样", on this film's Sound button).
+   The first time the film plays muted, "Sound on" comes up in the middle of the picture, larger, then drops in an arc
+   onto the Sound button and lands there with a small bounce. While the film is muted that button is the same dark pill,
+   breathing in walnut (on the portfolio: his blue, eg.css .snd); a click turns the sound on and it goes back to the glass Sound button, which
+   mutes again; muting brings the pill back without the flight. snd.js; the keyframes are eg.css's. */
+.film #video-sound .snd-on{display:none}
+.film #video-sound.is-snd{width:auto;padding:0 16px 0 13px;gap:8px;border-color:transparent;color:#fff;font-weight:600;
+  background:rgba(29,29,31,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);animation:snd-glow 2.6s ease-out infinite}
+.film #video-sound.is-snd:hover{background:rgba(154,101,68,.95)}
+.film #video-sound.is-snd .snd-on{display:inline}
+.film #video-sound.is-snd > span:not(.snd-on){display:none}
+.film #video-sound.is-fly{visibility:hidden;animation:none}
+.film #video-sound.is-snd.is-land{animation:snd-land .42s cubic-bezier(.3,.7,.4,1),snd-glow 2.6s ease-out .42s infinite}
+.film #video-sound.is-snd:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* the pill in flight: a copy over the button, moved to the middle of the picture and back */
+.snd-fly{position:absolute;z-index:4;margin:0;pointer-events:none;opacity:0;transition:opacity .35s ease}
+.snd-fly.is-on{opacity:1}
+.snd-fly .snd__x,.snd-fly .snd__y{display:block;height:100%;transform:translate(0,0)}
+.snd-fly .snd__pill{display:flex;align-items:center;justify-content:center;gap:8px;height:100%;box-sizing:border-box;padding:0 16px 0 13px;
+  border-radius:999px;background:rgba(29,29,31,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;
+  font-weight:600;line-height:1;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.28);transform-origin:50% 50%}
+.snd-fly .snd__pill svg{flex:none}
+.snd-fly.is-mid .snd__x{transform:translateX(var(--dx,0))}
+.snd-fly.is-mid .snd__y{transform:translateY(var(--dy,0))}
+.snd-fly.is-mid .snd__pill{transform:scale(1.7)}
+.snd-fly.is-drop .snd__x{transition:transform .95s cubic-bezier(.25,.75,.35,1)}
+.snd-fly.is-drop .snd__y{transition:transform .95s cubic-bezier(.62,0,.92,.42)}
+.snd-fly.is-drop .snd__pill{transition:transform .95s cubic-bezier(.3,.6,.3,1)}
+@keyframes snd-land{0%{transform:translateY(0)}40%{transform:translateY(-9px)}100%{transform:translateY(0)}}
+@keyframes snd-glow{0%{box-shadow:0 6px 24px rgba(0,0,0,.28),0 0 0 0 rgba(154,101,68,.55)}70%,100%{box-shadow:0 6px 24px rgba(0,0,0,.28),0 0 0 16px rgba(154,101,68,0)}}
+@media (prefers-reduced-motion:reduce){.film #video-sound.is-snd,.film #video-sound.is-snd.is-land{animation:none}.snd-fly{display:none}}

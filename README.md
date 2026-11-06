@@ -11,12 +11,19 @@ assets/js/main.js     theme toggle, hero video controls, buy gallery + finishes,
 assets/js/scan.js     scroll-driven mapping: a LiDAR point cloud of the floor plan builds up on a canvas over the demo, tilts to 3D, then settles onto the interactive plan
 assets/js/lab.js      the Autonomy demo: the same plan three ways — scan (scan.js), "Send it" (room pins, hallway-graph planner, telemetry) and "Drive it" (joystick game on the traced walls, chase camera), one SVG; exposes window.CIHANG_LAB
 assets/js/app.js      the app card beside the demo: conversation, quick commands, typed/spoken requests matched to rooms by need, replies that follow the demo's events
+assets/js/form.js     the pre-order / contact form: one form lives in #contact, the overlay borrows it; validation, submit, states
+assets/js/stat.js     visits: one "view" on load and one "end" on leaving (furthest section, scroll depth, dwell). No cookie, no third party
 assets/js/i18n.js     languages: picks the language, loads assets/i18n/<lang>.json and applies it to the page; the switcher (globe in the nav, pills in the phone menu)
+assets/css/structure.css  the Structure section (v57): Fig 1 CIHANG assembled / shell off / apart / folded, Fig 2 the front wheel; from the portfolio's CAD anatomy figure
+assets/js/structure.js    loads the Structure drawing when the section comes near and keeps it on the page's theme
+assets/js/structure-svg.js  Fig 1's drawing and both figures' live code, with their strings in seven languages (product copy: _gen/v57/structure_copy.json, applied by _gen/v57/structure_v57.py)
+assets/js/structure-fold.js / structure-wheel.js  Fig 1's fold, frame by frame (loaded on demand), and Fig 2's 41 wheel drawings
 assets/i18n/          one dictionary per language: en (the source), zh, ja, ko, de, es, fr
 assets/seq/           56 frames (1280×720 WebP) cut from the film at 10.7–14.7 s for the scroll-driven unfold
 assets/img/           web-sized WebP renders (studio/lifestyle set: cream studio views plus KeyShot navy/titanium views on the same cameras, pair-living banner, overhead-lidar card, floorplan, chair-top sprite) plus stills cut from the film: lobby/elevator (autonomy cards), wardrobe-close (fold card), finishes (design card, three colours), bar (people card), joystick-film (banner); and AI scene photographs made from the white-background renders (ChatGPT image generation, checked against the renders: joystick on the right armrest, display on the left, black roller wheels front, knobby tyres with silver hubs rear): `hospital.webp` (2400×1350, from Leo's 5760 upscale), `lounge-home.webp` (1920×1080, his tighter crop of `home.png`) and `airport.webp` (2400×1350, cut from his 8640×4860 ComfyUI upscale with the watermark corner cropped away, then mirrored so the joystick is on the right) — the three People cards "Hospitals and rehab / Senior communities / Rental fleets and hospitality"; the originals are the PNGs next to them, `_gen/` holds candidates and previews. The film stills they replaced (`lounge.webp`, `lobby.webp`) are still in the folder and in `_backup/v35-images/`
-assets/video/         hero film (cihang.mp4, 1080p, ~18 MB) and its poster frame
+assets/video/         hero film (cihang.mp4, 1080p, ~18 MB) and its poster frame; structure-wheel-film.mp4 is Fig 2's clip (26.4–31.3 s of the film, cropped)
 assets/favicon.svg
+_backend/             the inquiry + analytics service (not published; see _backend/说明.md)
 ```
 
 ## Preview locally
@@ -27,7 +34,9 @@ Open `index.html` in a browser, or run a tiny server from this folder:
 python -m http.server 8000
 ```
 
-then visit http://localhost:8000.
+then visit http://localhost:8000. That serves the page but not the form — for the whole thing,
+including the working form and the dashboard, double-click `_backend/start.bat` instead and open
+http://localhost:8787.
 
 ## Publish on GitHub Pages
 
@@ -43,13 +52,42 @@ All paths are relative, so it also works in a sub-folder or on a custom domain.
 - Buy module: versions, price text and CTA labels are in the `OFFERS` table in `main.js`; the price line is the `.buy__price` block in `index.html` (delete it to hide pricing). The gallery auto-plays until the visitor clicks a view. Finish swatches (`#buy-finishes`) swap the whole view set: each thumbnail has a `data-base` name and the swatch adds a suffix, so a finish needs the four files `<base><suffix>.webp` in `assets/img/` (currently `-navy` and `-titanium`, KeyShot renders on the same four cameras as the cream set; the dark finishes were fitted to the cream framing by matching the chair's bounding box, and `?r=2` on the variant URLs busts old caches).
 - Film: crops from the top on wide screens; `BOTTOM_KEEP` in `main.js` is the share of the frame allowed to be lost at the bottom (default 4%).
 - Colors: change the tokens under `:root` (light, the default) and `:root[data-theme="dark"]` (dark, reached via the nav toggle) in `style.css`.
-- To swap the hero film, replace `assets/video/cihang.mp4` and `assets/video/poster.webp`. The current film is encoded from Leo's 16 Mbps master (`part-A2.mp4`, 1080p30, 72 s) at 4.3 Mbps two-pass H.264 (≈40 MB; the earlier 2 Mbps copy looked soft): `ffmpeg -i part-A2.mp4 -c:v libx264 -preset medium -profile:v high -pix_fmt yuv420p -b:v 4300k -maxrate 6000k -bufsize 9000k -pass 1/2 -c:a aac -b:a 128k -movflags +faststart`. The hosted preview carries a 1.4 Mbps copy of the same encode (≤ 15 MB per file there). The unfold frames and the film stills (poster 1.5 s, wardrobe-close 5.5 s, lobby 33.5 s, elevator 43.5 s, joystick-film 54.8 s — the first frame after the caption ghost has gone, finishes 69.4 s) are all cut from the master too.
+- Hero film on the live site: the first `<source>` is the GitHub Release asset `https://github.com/yuhengw04-creator/PCR/releases/download/v1/cihang.mp4` (the 38 MB 4.3 Mbps file could not go through the web uploader's 25 MB limit; Releases take up to 2 GB), the second is the local `assets/video/cihang.mp4` so the folder still plays offline. To replace the film, upload the new file to a new release tag and update the first `src`. To swap the hero film locally, replace `assets/video/cihang.mp4` and `assets/video/poster.webp`. The current film is encoded from Leo's 16 Mbps master (`part-A2.mp4`, 1080p30, 72 s) at 4.3 Mbps two-pass H.264 (≈40 MB; the earlier 2 Mbps copy looked soft): `ffmpeg -i part-A2.mp4 -c:v libx264 -preset medium -profile:v high -pix_fmt yuv420p -b:v 4300k -maxrate 6000k -bufsize 9000k -pass 1/2 -c:a aac -b:a 128k -movflags +faststart`. The hosted preview carries a 1.4 Mbps copy of the same encode (≤ 15 MB per file there). The unfold frames and the film stills (poster 1.5 s, wardrobe-close 5.5 s, lobby 33.5 s, elevator 43.5 s, joystick-film 54.8 s — the first frame after the caption ghost has gone, finishes 69.4 s) are all cut from the master too.
 - To swap an image, drop a new file into `assets/img/` and update the `src` in `index.html`. Keep images ≤ 2800 px on the long side. Section headlines are `clamp(30px, 4.2vw, 50px)` (v39: one step smaller than before, Leo found them a little large against the copy).
 - Unfold sequence: `#unfold` in `index.html` (`data-frames` = number of frames); frames are `assets/seq/unfold-NN.webp`. To re-cut: `ffmpeg -ss 10.70 -t 4.00 -i cihang.mp4 -vf "fps=14,scale=1280:-1" -c:v libwebp -quality 78 assets/seq/unfold-%02d.webp`. The wrapper height (`.unfold { height: 240vh }`) sets how much scrolling plays the whole sequence.
 - The Autonomy demo (`#lab-scan` in `index.html`; `scan.js`, `lab.js`, `app.js`): one plan, three ways. **Scan** — `scan.js` runs on any `div.scan` with `[data-scan=sticky|track|plan]` elements: the plan (`WALLS` = 112 rectangles traced from `floorplan.webp`, `WINDOWS`, `FURN`, `ROUND`, `NODES`/`LOOP` hallway graph, exported as `window.CIHANG_PLAN`, viewBox 1791 × 1180, ~100 units per metre) is built up as a LiDAR point cloud while you scroll (STEP 13, 40 rays, ~58k seeded points): the view starts top-down on the plan, tilts to 3D at 8–40 %, returns at 60–80 %, the rooms tint at 66–87 %, the plan and the panel fade in at 80–90 % (`--reveal`), the cloud fades at 84–95 %; while tilted the robot is a small low-poly chair built from boxes (`PARTS`: chassis, wheels, footplate, seat, backrest, walnut armrests, LiDAR puck; faces depth-sorted), cross-faded to the chair sprite when the view is top-down. The pinned demo stays for 70 % of the viewport (60 % on phones) after the hand-off (`hold`; track 370vh / 300vh) and is kept vertically centred while pinned (`centerSticky()` in lab.js on desktop, the stage's `top` in scan.js on phones — scan.js reads the sticky's computed `top` for its progress, so the two agree). **Send it** — tap a room on the plan, a room button, a quick command, or type/speak a request in the app card: `lab.js` plans on the hallway graph (Dijkstra, `smoothPath` CORNER 28, TURN_RATE 170, SPEED 120; from a free position `planFrom` joins the nearest node whose straight leg clears the walls) and animates the chair; telemetry (battery drains with distance, charges on the dock, speed, sensors) lives in the card. `app.js` owns the conversation: `INTENTS` (English + Chinese) plus the current language's `js.intent.*` phrases map what people say to a room and a reply ("I'm tired" → bedroom, "thirsty" → kitchen, "someone's at the door" → entry; order matters, first match wins), greetings/thanks/stop are handled, and the chair's replies follow `cihang:lab` events (`driving`, `changing`, `already`, `arrived`, `docked`, `stopped`) so a tap on the plan is narrated too; the mic uses the Web Speech API (Chrome/Edge, language follows the page). Swap `parseIntent()` for a real model call when there is one. **Drive it** — the joystick game on the same plan: `step()` physics (R 33, HALF 26, RAY 190; `VMAX`, `ACC`, `BRAKE`, `WMAX`, `TURN_LAG`, `ASSIST_RATE`), 15 front + 5 rear rays against the traced walls + windows + furniture (`RECTS`) and `ROUND` circles, wall assist that steers along whatever is ahead (switch it off and walls bump), targets Kitchen → Living room → Bedroom → Dock with pars 9/12/15/10 (3 stars at par, 2 up to 1.7×), best times in `localStorage` `cihang.lab.best`, a chase camera (1300×780 desktop / 900×1125 phone, chair at 66 % height pointing up; pins counter-rotate). The two mode tabs are labelled **Auto / Manual** since v42 (`lab.send_it*` / `lab.drive_it*` in the dictionaries: 自动/手动, 自動/手動, 자동/수동, Auto/Manuell, Auto/Manual, Auto/Manuel); the code keeps calling the modes `send` and `drive`. The panel is drawn inside a phone (`.lab__phone`, v39) that keeps a real handset's proportions (v41: body 0.478 wide : 1 tall, iPhone-like; `centerSticky()` in lab.js solves the pair height from the sticky's width — plan 1.518 : 1 + phone + gap — clamps the phone to 280–360 px and writes `--phone-w` / `--plan-h`, which size the grid column, the phone and the stage) and is styled as an app: grey screen (`--app-bg`), white cells (`--app-cell`), an app header (icon, wordmark, the live status line), an iOS-style segmented control (`--seg` / `--seg-on`), grouped-list captions rendered from the translated aria-labels (`.lab__chips::before`, `.lab__rooms-list::before`), walnut user bubbles and send button; the route on the plan is a white dashed line with a dark halo. On phones the handset body is hidden and the same app card sits under the plan. The panel hides its scrollbar (iOS-style); the status bar carries signal, Wi-Fi and a battery with its nub (v42). The idle tab reads as a switch, and once the map is ready the "Drive it" tab breathes (walnut tint, soft ring, dot badge — `lab-nudge` in style.css) until the joystick has been tried once (`#lab-scan.is-driven`, set in `setMode('drive')`); the animation is off under reduce-motion, the tint and badge stay. Switching modes never cuts: one camera model serves both views and `tweenCam()` eases from the whole plan onto the chair (zoom, then turn) and back (turn, then pull out), 0.85 s; on phones the plan box's aspect ratio (1.518 ↔ 4:5) is tweened with it and the pad + mini HUD fade in once the zoom has landed. Stick feel: 8 % dead band + 1.35 expo sideways, 1.25 expo throttle, turn rate eases in over `TURN_LAG`, 35 % gentler at speed, mirrored when reversing, zero on release. Phones: the stage is sticky and near full-screen, the mode switch and a mini HUD float over the plan, the pad floats in the stage, the card sits under the demo. The scroll-scrubbed and hand-driven parts run regardless of the OS reduce-motion setting (Windows "animation effects off" turns it on for many PCs and used to freeze the chair unfolded); only decorative autoplay (rings, pulses, reveals, gallery) honours it.
 - Previous versions of the demos (a separate map demo with a phone mock-up, `map.js`, and a separate joystick game, `drive.js`) are in `_backup/v32-before-merge/`; `_to_delete/` holds the retired files.
 - Cache-busting: the CSS/JS links in `index.html` carry `?v=N`; bump the number when you change those files so browsers reload them (and `V` in `i18n.js`). The hosted preview is built with versioned file names instead (`style.v34.css`, `scan.v34.js`, `zh.v34.json` …) so a new version can never run with a visitor's cached old scripts.
 - Older browsers and weak machines: the JavaScript is plain ES5 (no arrow functions, `let`, template strings) and the few newer APIs are guarded (`IntersectionObserver`, `ResizeObserver`, `CustomEvent`, `video.play()` promises). CSS written with `aspect-ratio`, `inset`, `margin-inline` and `svh` carries fallbacks for cores that lack them (Chromium < 88 / Safari < 15 — still common in some desktop browsers): `top/right/bottom/left`, `margin-left/right`, `vh`, and an `@supports not (aspect-ratio)` block that gives the unfold stage and the plan box their height with padding. Sections start at opacity 0 and are revealed by the observer; a scroll-time sweep and load timers reveal anything on screen even if the observer never fires, and this runs first in `main.js` so a failure elsewhere can never leave the page blank. The point cloud is rasterised into a pixel buffer (`drawCloud` in `scan.js`, capped at ~1.2 megapixels) instead of 58k canvas rects, and the quality adapts (every 2nd/3rd/4th point) when frames still take too long; if the point cloud cannot start at all the demo degrades to the plan and its controls (`.scan--off`). The unfold frames load coarse-to-fine right after page load, so the chair moves in big steps while the rest arrives.
+
+## Contact form and backend
+
+The page is still static, and still goes to GitHub Pages as a folder of files. The form is
+the one thing that needs something running: a small service in `_backend/` (a single Go
+binary, standard library only, no database engine) that stores inquiries and counts visits.
+`_backend/` is in `.gitignore` and never reaches the repository. Full instructions, in
+Chinese, are in `_backend/说明.md`.
+
+- **One form, two places.** The markup lives once, in `#contact` between FAQ and the closing.
+  Every Pre-order / Contact button carries `data-preorder="<where>"`; `form.js` moves that same
+  form node into the overlay when one is pressed and puts it back on close. One set of fields,
+  one set of translations, one submit path, and the `where` is stored with the inquiry so you
+  can see which button people use. With JavaScript off the buttons are ordinary links to
+  `#contact`, where the form is already sitting.
+- **Where the backend is** is declared once, in the `<head>`: `window.CIHANG_API`. Empty means
+  "same address as the page", which is what you get running `_backend/start.bat` locally.
+  Once the service is on a server, put its address there. `window.CIHANG_EMAIL` next to it is
+  optional — if the form ever fails, the page offers that address instead.
+- **Spam** is handled without a captcha: a hidden field only a machine fills, a minimum time on
+  the form, and per-address rate limits. A rejected submission gets the same answer a real one
+  does, so a bot learns nothing.
+- **Analytics** (`stat.js`) sends two events per visit over `sendBeacon` with a `text/plain`
+  body (a "simple" request, so no CORS preflight). The backend stores a salted daily hash of the
+  address, never the address, and sets no cookie. The dashboard charts the furthest section each
+  visit reached, in page order — that is the one number that says where the page loses people.
+- **Two behaviours moved** for the new section: the scroll-spy selector skips `.btn`, so the
+  sheet's Pre-order button never lights up as the current section; and the sticky buy bar now
+  retires at `#contact` rather than at the closing, so it never sits on top of the form.
 
 ## Languages
 
@@ -70,3 +108,16 @@ The page is written in English; `assets/js/i18n.js` swaps in another language at
 - Demo: the stage is sticky and kept centred; the room pins shrink to dots, the mode switch and a mini HUD float over the plan, the app card (chat, chips, input, room buttons) follows under the demo; in Drive it the plan box becomes 4:5 and the pad floats in the stage (see the Autonomy demo above).
 - Specs collapse to one line per number; "Five ways to drive" becomes a horizontal snap strip.
 - Highlight overlays: the LiDAR card (`.card--lidar`) and the sensor card (`.card--spot`) draw thin teal rings, a scan beam and an outline over the render, plus an HTML label pill (`.spot__tag`, positioned by `--x/--y` percentages). Because the shapes are placed in image percentages, these images must never be cropped by CSS. The LiDAR card centres are set in the inline SVG (`translate(1229 540)` and `(1229 268)` in a 1920×1080 box).
+
+## Portfolio edition (`portfolio.html`)
+
+A second page for the design portfolio, served from the same folder and sharing every asset: no Buy/price
+block, version picker, Pre-order buttons, sticky buy bar, pre-order overlay, contact form or visit counter, and
+the FAQ "How do I buy one?" is gone. The gallery and the three finish swatches stay, centred beside each other.
+Online it lives at `…/PCR/portfolio.html` next to the product page.
+
+It is generated from `index.html`, so after changing the product page run, from this folder:
+
+    python3 _gen/make_portfolio.py index.html portfolio.html
+
+The script stops with `NO MATCH` if a block it removes has changed shape — adjust the pattern there.

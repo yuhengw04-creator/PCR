@@ -478,7 +478,7 @@
     var top = parseFloat(getComputedStyle(st).top) || 0;
     // phones: normalised to the pinned pair's final height (plan + app)
     // after the hand-off the finished plan stays pinned for a while (HOLD of the viewport) so it is not flicked past
-    var hold = (isPhone() ? 0.6 : 0.7) * window.innerHeight;
+    var hold = (isPhone() ? 1.0 : 1.2) * window.innerHeight;   // v50: longer hold (+0.4 / +0.5 screen) so the demo pointer is seen
     var r = tr.getBoundingClientRect(), total = tr.offsetHeight - (isPhone() ? pairH() : st.offsetHeight) - hold;
     if (total <= 0) return 1;
     return Math.min(1, Math.max(0, (top - r.top) / total));
